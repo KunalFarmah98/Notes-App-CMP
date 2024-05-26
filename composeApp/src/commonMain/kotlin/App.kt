@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import dataMapper.DateTimeUtils
 import database.Note
 import database.NoteDao
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -31,9 +32,9 @@ fun App(noteDao: NoteDao) {
 
         LaunchedEffect(key1 = true) {
             val notesList = listOf(
-                Note("note1", "note1"),
-                        Note("note2", "note2"),
-            Note("note2", "note2")
+                Note("note1", "note1", Note.generateRandomColor(), DateTimeUtils.toEpochMillis(DateTimeUtils.now())),
+                        Note("note2", "note2", Note.generateRandomColor(), DateTimeUtils.toEpochMillis(DateTimeUtils.now())),
+            Note("note3", "note3",  Note.generateRandomColor(), DateTimeUtils.toEpochMillis(DateTimeUtils.now()))
             )
             notesList.forEach{
                 noteDao.upsert(it)
@@ -64,6 +65,7 @@ fun NoteItem(noteDao: NoteDao, note: Note, scope: CoroutineScope){
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = note.title)
-        Text(text = note.text)
+        Text(text = note.content)
+        Text(text = DateTimeUtils.formatNoteDate(DateTimeUtils.fromEpochMillis(note.created)))
     }
 }
