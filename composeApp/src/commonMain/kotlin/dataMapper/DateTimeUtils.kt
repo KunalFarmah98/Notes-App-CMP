@@ -26,7 +26,7 @@ object DateTimeUtils {
         val day = dateTime.dayOfMonth.let { if (it < 10) "0$it" else "$it" }
         val hour = dateTime.hour.let { if (it < 10) "0$it" else "$it" }
         val minute = dateTime.minute.let { if (it < 10) "0$it" else "$it" }
-        return "$day/$month/$year $hour:$minute"
+        return "$day $month $year, $hour:$minute"
     }
 
 

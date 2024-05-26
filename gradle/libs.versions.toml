@@ -17,6 +17,7 @@ room = "2.7.0-alpha02"
 ksp = "2.0.0-1.0.21"
 sqlite = "2.5.0-SNAPSHOT"
 datetime = "0.6.0"
+lifecycleViewModel = "2.8.0-rc01"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -34,6 +35,7 @@ room-runtime-android = { module = "androidx.room:room-runtime-android", version.
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 date-time = {module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime"}
+lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycleViewModel"}
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
