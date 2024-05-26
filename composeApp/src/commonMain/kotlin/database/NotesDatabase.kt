@@ -1,14 +1,10 @@
 package database
 
-import androidx.room.InvalidationTracker
+import androidx.room.Database
 import androidx.room.RoomDatabase
 
-class NotesDatabase: RoomDatabase() {
-    override fun clearAllTables() {
-        TODO("Not yet implemented")
-    }
-
-    override fun createInvalidationTracker(): InvalidationTracker {
-        TODO("Not yet implemented")
-    }
+// different impl are in android and ios
+@Database(entities = [Note::class], version = 1)
+abstract class NotesDatabase: RoomDatabase() {
+    abstract fun noteDao(): NoteDao
 }
