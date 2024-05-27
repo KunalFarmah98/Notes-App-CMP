@@ -1,8 +1,9 @@
 import androidx.compose.ui.window.ComposeUIViewController
 
-fun MainViewController() = ComposeUIViewController {
-    val dao = remember {
-        getNotesDatabase().noteDao()
+fun MainViewController() = ComposeUIViewController(
+    configure = {
+        KoinInitializer().init()
     }
-    App(dao)
+) {
+    App()
 }

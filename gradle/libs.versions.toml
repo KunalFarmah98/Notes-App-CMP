@@ -18,6 +18,11 @@ ksp = "2.0.0-1.0.21"
 sqlite = "2.5.0-SNAPSHOT"
 datetime = "0.6.0"
 lifecycleViewModel = "2.8.0-rc01"
+koin = "3.6.0-alpha3"
+koinCompose = "3.6.0-alpha3"
+navigationCompose = "2.7.0-alpha03"
+koinComposeMultiplatform = "1.2.0-alpha3"
+
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -35,7 +40,12 @@ room-runtime-android = { module = "androidx.room:room-runtime-android", version.
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 date-time = {module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime"}
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinCompose" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koinComposeMultiplatform" }
 lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycleViewModel"}
+navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

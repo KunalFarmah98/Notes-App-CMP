@@ -29,63 +29,68 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dataMapper.DateTimeUtils
 import database.Note
-import database.NoteDao
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.KoinContext
+import viewmodel.NotesViewModel
 
 @Composable
 @Preview
-fun App(noteDao: NoteDao) {
+fun App() {
     MaterialTheme {
-        val notes by noteDao.getAllNotes().collectAsState(initial = emptyList())
-        val scope = rememberCoroutineScope()
+        KoinContext {
+            val notesViewModel: NotesViewModel = koinViewModel()
+            val notes by notesViewModel.notes.collectAsState(initial = emptyList())
+            val scope = rememberCoroutineScope()
 
-        LaunchedEffect(key1 = true) {
-            val notesList = listOf(
-                Note(
-                    "note1",
-                    "note1",
-                    Note.generateRandomColor(),
-                    DateTimeUtils.toEpochMillis(DateTimeUtils.now())
-                ),
-                Note(
-                    "note2",
-                    "note2",
-                    Note.generateRandomColor(),
-                    DateTimeUtils.toEpochMillis(DateTimeUtils.now())
-                ),
-                Note(
-                    "note3",
-                    "note3",
-                    Note.generateRandomColor(),
-                    DateTimeUtils.toEpochMillis(DateTimeUtils.now())
-                )
-            )
-            notesList.forEach {
-                noteDao.upsert(it)
-            }
-        }
-
-        Scaffold(topBar = { TopAppBar(title = { Text(text = "Notes") }) },
-            floatingActionButton = {
-                FloatingActionButton(onClick = { /*TODO*/ }) {
-                    Text(
-                        text = "+",
-                        textAlign = TextAlign.Center,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
+            LaunchedEffect(key1 = true) {
+                val notesList = listOf(
+                    Note(
+                        "note1",
+                        "note1",
+                        Note.generateRandomColor(),
+                        DateTimeUtils.toEpochMillis(DateTimeUtils.now())
+                    ),
+                    Note(
+                        "note2",
+                        "note2",
+                        Note.generateRandomColor(),
+                        DateTimeUtils.toEpochMillis(DateTimeUtils.now())
+                    ),
+                    Note(
+                        "note3",
+                        "note3",
+                        Note.generateRandomColor(),
+                        DateTimeUtils.toEpochMillis(DateTimeUtils.now())
                     )
+                )
+                notesList.forEach {
+                    notesViewModel.upsertNote(it)
                 }
-            }) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it),
-                contentPadding = PaddingValues(16.dp)
-            ) {
-                items(notes) { note ->
-                    NoteItem(noteDao, note, scope)
+            }
+
+            Scaffold(topBar = { TopAppBar(title = { Text(text = "Notes") }) },
+                floatingActionButton = {
+                    FloatingActionButton(onClick = { /*TODO*/ }) {
+                        Text(
+                            text = "+",
+                            textAlign = TextAlign.Center,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(it),
+                    contentPadding = PaddingValues(16.dp)
+                ) {
+                    items(notes) { note ->
+                        NoteItem(notesViewModel, note, scope)
+                    }
                 }
             }
         }
@@ -95,16 +100,11 @@ fun App(noteDao: NoteDao) {
 }
 
 @Composable
-fun NoteItem(noteDao: NoteDao, note: Note, scope: CoroutineScope) {
+fun NoteItem(notesViewModel: NotesViewModel, note: Note, scope: CoroutineScope) {
     Row {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable {
-                    scope.launch {
-                        noteDao.deleteNote(note)
-                    }
-                }
                 .padding(10.dp)
                 .background(color = Color(note.colorHex), shape = RoundedCornerShape(20.dp))
                 .border(width = 1.dp, color = Color.Transparent, shape = RoundedCornerShape(20.dp))
@@ -124,7 +124,7 @@ fun NoteItem(noteDao: NoteDao, note: Note, scope: CoroutineScope) {
                 )
                 Icon(modifier = Modifier
                     .clickable {
-                        scope.launch { noteDao.deleteNote(note) }
+                        scope.launch { notesViewModel.deleteNote(note) }
                     }
                     .alignByBaseline()
                     .alignByBaseline()
@@ -154,9 +154,6 @@ fun NoteItem(noteDao: NoteDao, note: Note, scope: CoroutineScope) {
             )
 
         }
-        Icon(modifier = Modifier.clickable {
-            scope.launch { noteDao.deleteNote(note) }
-        }, imageVector = Icons.Filled.Delete, contentDescription = "delete", tint = Color.Yellow)
     }
 
 }
