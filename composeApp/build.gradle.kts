@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
@@ -53,6 +54,8 @@ kotlin {
             implementation(libs.date.time)
             implementation(libs.koin.compose)
             implementation(libs.lifecycle.viewmodel)
+            implementation(libs.navigation.compose)
+            implementation(libs.kotlinx.serialization.json)
         }
     }
 }

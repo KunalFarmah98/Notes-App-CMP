@@ -27,11 +27,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHost
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import dataMapper.DateTimeUtils
 import database.Note
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinContext
 import viewmodel.NotesViewModel
@@ -44,7 +50,7 @@ fun App() {
             val notesViewModel: NotesViewModel = koinViewModel()
             val notes by notesViewModel.notes.collectAsState(initial = emptyList())
             val scope = rememberCoroutineScope()
-
+            val navController = rememberNavController()
             LaunchedEffect(key1 = true) {
                 val notesList = listOf(
                     Note(
@@ -70,32 +76,33 @@ fun App() {
                     notesViewModel.upsertNote(it)
                 }
             }
-
-            Scaffold(topBar = { TopAppBar(title = { Text(text = "Notes") }) },
-                floatingActionButton = {
-                    FloatingActionButton(onClick = { /*TODO*/ }) {
-                        Text(
-                            text = "+",
-                            textAlign = TextAlign.Center,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }) {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(it),
-                    contentPadding = PaddingValues(16.dp)
-                ) {
-                    items(notes) { note ->
-                        NoteItem(notesViewModel, note, scope)
+            NavHost(navController = navController, startDestination = NotesList) {
+                composable<NotesList> {
+                    Scaffold(topBar = { TopAppBar(title = { Text(text = "Notes") }) },
+                        floatingActionButton = {
+                            FloatingActionButton(onClick = { /*TODO*/ }) {
+                                Text(
+                                    text = "+",
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }) {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(it),
+                            contentPadding = PaddingValues(16.dp)
+                        ) {
+                            items(notes) { note ->
+                                NoteItem(notesViewModel, note, scope)
+                            }
+                        }
                     }
                 }
             }
         }
-
-
     }
 }
 
@@ -157,3 +164,11 @@ fun NoteItem(notesViewModel: NotesViewModel, note: Note, scope: CoroutineScope) 
     }
 
 }
+
+@Serializable
+object NotesList
+
+@Serializable
+data class CreateNote(
+    val title: String
+)
