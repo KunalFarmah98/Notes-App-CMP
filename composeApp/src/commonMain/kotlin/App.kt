@@ -40,6 +40,8 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinContext
+import screens.CreateNoteScreen
+import screens.NotesScreen
 import viewmodel.NotesViewModel
 
 @Composable
@@ -76,99 +78,23 @@ fun App() {
                     notesViewModel.upsertNote(it)
                 }
             }
-            NavHost(navController = navController, startDestination = NotesList) {
-                composable<NotesList> {
-                    Scaffold(topBar = { TopAppBar(title = { Text(text = "Notes") }) },
-                        floatingActionButton = {
-                            FloatingActionButton(onClick = { /*TODO*/ }) {
-                                Text(
-                                    text = "+",
-                                    textAlign = TextAlign.Center,
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-                        }) {
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(it),
-                            contentPadding = PaddingValues(16.dp)
-                        ) {
-                            items(notes) { note ->
-                                NoteItem(notesViewModel, note, scope)
-                            }
-                        }
-                    }
+            NavHost(navController = navController, startDestination = NotesScreen) {
+                composable<NotesScreen> {
+                   NotesScreen(notesViewModel, navController, notes, scope)
+                }
+                composable<CreateNoteScreen> {
+                    CreateNoteScreen(notesViewModel, navController, it)
                 }
             }
         }
     }
 }
 
-@Composable
-fun NoteItem(notesViewModel: NotesViewModel, note: Note, scope: CoroutineScope) {
-    Row {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp)
-                .background(color = Color(note.colorHex), shape = RoundedCornerShape(20.dp))
-                .border(width = 1.dp, color = Color.Transparent, shape = RoundedCornerShape(20.dp))
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .fillMaxWidth(0.9f),
-                    text = note.title,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Icon(modifier = Modifier
-                    .clickable {
-                        scope.launch { notesViewModel.deleteNote(note) }
-                    }
-                    .alignByBaseline()
-                    .alignByBaseline()
-                    .padding(top = 10.dp, end = 10.dp),
-                    imageVector = Icons.Filled.Delete,
-                    contentDescription = "delete",
-                    tint = Color.Black
-                )
-            }
-
-            Text(
-                modifier = Modifier
-                    .padding(horizontal = 10.dp)
-                    .fillMaxWidth(),
-                text = note.content,
-                textAlign = TextAlign.Start,
-                fontSize = 16.sp
-            )
-            Text(
-                modifier = Modifier
-                    .padding(10.dp)
-                    .fillMaxWidth(),
-                text = DateTimeUtils.formatNoteDate(DateTimeUtils.fromEpochMillis(note.created)),
-                fontWeight = FontWeight.Light,
-                fontSize = 14.sp,
-                textAlign = TextAlign.Right
-            )
-
-        }
-    }
-
-}
 
 @Serializable
-object NotesList
+object NotesScreen
 
 @Serializable
-data class CreateNote(
+data class CreateNoteScreen(
     val title: String
 )
