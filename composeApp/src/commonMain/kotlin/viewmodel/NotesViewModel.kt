@@ -10,12 +10,15 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 class NotesViewModel(private val noteDao: NoteDao): ViewModel() {
+    private var _loading = MutableStateFlow(true)
     private var _notes = MutableStateFlow<List<Note>>(emptyList())
     val notes = _notes.asStateFlow()
+    val isLoading = _loading.asStateFlow()
 
     init{
         viewModelScope.launch {
             noteDao.getAllNotes().distinctUntilChanged().collect{
+                _loading.value = false
                 _notes.value = it
             }
         }
